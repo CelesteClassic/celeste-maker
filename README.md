@@ -8,3 +8,4 @@ A map editor for CELESTE Classic built in love2d using [picolove](https://github
 | S / F    | Move level left and right |
 | Right click | Erase |
 | Middle click | Sample |
+| Ctrl+A   | Toggle autotiling (WARNING: irreversible) |

@@ -88,6 +88,8 @@ local __sample_rate=22050
 local channels=1
 local bits=16
 
+local autotile=false
+
 log=print
 --log=function() end
 
@@ -503,14 +505,14 @@ function flip_screen()
 			local tx = flr((mx-startx) / (8*scale)) + pico8.cart.room.x*16
 			local ty = flr((my-starty) / (8*scale)) + pico8.cart.room.y*16
 
-			if m_primary then
-				pico8.map[ty][tx] = selected
-			elseif m_secondary then
-				pico8.map[ty][tx] = 0
+			if m_primary or m_secondary then
+				pico8.map[ty][tx] = m_secondary and 0 or selected
+				if autotile then
+					pico8.cart.update_autotile()
+				end
 			elseif m_middle then
 				selected = pico8.map[ty][tx]
 			end
-			--pico8.cart.update_autotile()
 		elseif mx > startx and mx < finishx
 		and my > sp_starty and my < sp_starty+scale*8*8
 		and m_primary then
@@ -579,7 +581,9 @@ function love.keypressed(key)
 	if cart and pico8.cart._keydown then
 		return pico8.cart._keydown(key)
 	end
-	if key=='s' and isCtrlOrGuiDown() then
+	if key=='a' and isCtrlOrGuiDown() then
+		autotile = not autotile
+	elseif key=='s' and isCtrlOrGuiDown() then
 		local map_string = ""
 		local gfx_string = ""
 
