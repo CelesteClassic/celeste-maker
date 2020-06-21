@@ -495,25 +495,34 @@ function flip_screen()
 		love.graphics.rectangle("line", startx + selected%16*8*scale, sp_starty + math.floor(selected/16)*8*scale, 8*scale, 8*scale)
 
 		-- mouse handling
-		if love.mouse.isDown(1) then
-			if mx > startx and mx < finishx
-			and my > starty and my < finishy then
-				local tx = flr((mx-startx) / (8*scale)) + pico8.cart.room.x*16
-				local ty = flr((my-starty) / (8*scale)) + pico8.cart.room.y*16
+		local m_primary = love.mouse.isDown(1)
+		local m_secondary = love.mouse.isDown(2)
+		local m_middle = love.mouse.isDown(3)
+		if mx > startx and mx < finishx
+		and my > starty and my < finishy then
+			local tx = flr((mx-startx) / (8*scale)) + pico8.cart.room.x*16
+			local ty = flr((my-starty) / (8*scale)) + pico8.cart.room.y*16
 
+			if m_primary then
 				pico8.map[ty][tx] = selected
-				--pico8.cart.update_autotile()
-			elseif mx > startx and mx < finishx
-			and my > sp_starty and my < sp_starty+scale*8*8 then
-				local tx = flr((mx-startx) / (8*scale))
-				local ty = flr((my-sp_starty) / (8*scale))
-				local q = tx%16+ty*16
+			elseif m_secondary then
+				pico8.map[ty][tx] = 0
+			elseif m_middle then
+				selected = pico8.map[ty][tx]
+			end
+			--pico8.cart.update_autotile()
+		elseif mx > startx and mx < finishx
+		and my > sp_starty and my < sp_starty+scale*8*8
+		and m_primary then
+			local tx = flr((mx-startx) / (8*scale))
+			local ty = flr((my-sp_starty) / (8*scale))
+			local q = tx%16+ty*16
 
-				if q < #pico8.quads/2 then
-					selected = q
-				end
+			if q < #pico8.quads/2 then
+				selected = q
 			end
 		end
+
 		isEditMode_last = true
 	end
 	-------------------------------------------------------------------------------------------------------------------
