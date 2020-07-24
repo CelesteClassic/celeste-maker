@@ -633,11 +633,12 @@ function love.keypressed(key)
 			map_string = map_string .. hex
 		end
 
-		-- os.date("%m-%d-%y_%H:%M")
+		local export_data=pico8.export_data
+		export_data=export_data:gsub("__map__[%dabcdef%c]+","__map__\n"..map_string)
+		export_data=export_data:gsub("__gfx__[%dabcdef%c]+","__gfx__\n"..gfx_string)
 		local file=love.filesystem.newFile(cartname)
 		file:open("w")
-		file:write(pico8.export_data)
-		log("saved "..cartname)
+		file:write(export_data)
 	elseif ((key=='right' and isEditMode) or key=='f') and pico8.cart.level_index()~=30 and not pico8.cart.is_title() then -- use level_index_max rather than 30 once implemented
 		local target = pico8.cart.level_index()+1
 		pico8.cart.load_room(target%8, flr(target/8))
