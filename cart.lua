@@ -335,11 +335,11 @@ function cart.load_p8(filename)
 	end)
 
 	-- injecting room restart on clear and reset fruit
-	lua = lua .. "\nfunction next_room()load_room(room.x,room.y)end\nload_room_o=load_room\nfunction load_room()load_room_o()got_fruit[level_index()+1]=false\nend\n"
+	lua = lua .. "\nfunction next_room()load_room(room.x,room.y)end\nload_room_o=load_room\nfunction load_room(x,y)got_fruit[level_index()+1]=false\nload_room_o(x,y)end\n"
 
 	-- INJECTING AUTOTILE CAPABILITIES
 	lua = "\nfunction sld(x,y)\nlocal rx = room.x*16\nlocal ry = room.y*16\nif x > rx+15 or x < rx or y > ry+15 or y < ry then\nreturn true\nend\nlocal n = mget(x,y)\nfor _, e in pairs(tiles) do\nif e == n then\nreturn true\nend\nend\nreturn false\nend\ntiles = {32,55,54,51,52,49,53,50,39,48,35,38,33,36,34,37,72}\nfunction update_autotile()\nlocal rx = room.x*16\nlocal ry = room.y*16\nfor x=0,15 do\nfor y=0,15 do\nlocal count = 0\nif sld(rx+x, ry+y) then\nif sld(rx+x, ry+y-1) then\ncount = count + 1\nend\nif sld(rx+x-1, ry+y) then\ncount = count + 2\nend\nif sld(rx+x+1, ry+y) then\ncount = count + 4\nend\nif sld(rx+x, ry+y+1) then\ncount = count + 8\nend\nmset(rx+x, ry+y, tiles[count+1])\nend\nend\nend\nend\n" .. lua
-
+	
 	local cart_env={}
 	for k, v in pairs(api) do
 		cart_env[k]=v
