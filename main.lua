@@ -599,18 +599,15 @@ function love.keypressed(key)
 		end
 		
 		-- gfx data (map half)
-    for i=0,128*32-1 do
-      if i%64==0 then
-		    gfx_string = gfx_string .. "\n"
-		  end
-			
+		for i=0,128*32-1 do
+			if i%64==0 then
+				gfx_string = gfx_string .. "\n"
+			end
 			local tile = api.mget(i%128, 32+flr(i/128))
 			local hex = string.format("%x", tile)
-			
 			if #hex==1 then
-        hex = "0" .. hex
+				hex = "0" .. hex
 			end
-			
 			local reverse = ""
 			reverse = reverse .. string.sub(hex,2,2)
 			reverse = reverse .. string.sub(hex,1,1)
@@ -618,24 +615,22 @@ function love.keypressed(key)
 		end
 
 		-- map data
-		for i=0,128*32 do
-      if i%128==0 and i>0 then
+		for i=0,128*32-1 do
+			if i%128==0 and i>0 then
 				map_string = map_string .. "\n"
 			end
-			
 			local tile = api.mget(i%128, flr(i/128))
 			local hex = string.format("%x", tile)
 			
 			if #hex==1 then
-        hex = "0" .. hex
+				hex = "0" .. hex
 			end
-			
 			map_string = map_string .. hex
 		end
 
 		local export_data=pico8.export_data
-		export_data=export_data:gsub("__map__[%dabcdef%c]+","__map__\n"..map_string)
-		export_data=export_data:gsub("__gfx__[%dabcdef%c]+","__gfx__\n"..gfx_string)
+		export_data=export_data:gsub("__map__[%dabcdef%c]+","__map__\n"..map_string.."\n")
+		export_data=export_data:gsub("__gfx__[%dabcdef%c]+","__gfx__\n"..gfx_string.."\n")
 		local file=love.filesystem.newFile(cartname)
 		file:open("w")
 		file:write(export_data)
